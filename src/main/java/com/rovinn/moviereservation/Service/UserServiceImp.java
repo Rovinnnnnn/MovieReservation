@@ -1,5 +1,6 @@
 package com.rovinn.moviereservation.Service;
 
+import com.rovinn.moviereservation.Exception.ResourceNotFoundException;
 import com.rovinn.moviereservation.JwtUtil;
 import com.rovinn.moviereservation.Repository.UserRepository;
 import com.rovinn.moviereservation.model.UserData;
@@ -36,7 +37,7 @@ public class UserServiceImp implements UserServiceInterface {
   }
     @Override
     public UserResponseDTO login(UserRequestDTO login) {
-        UserData find =  userRepository.findByEmail(login.getEmail()).orElseThrow(()->new RuntimeException("User not found"));
+        UserData find =  userRepository.findByEmail(login.getEmail()).orElseThrow(()->new ResourceNotFoundException("User not found"));
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         boolean matches = passwordEncoder.matches(login.getPassword(), find.getPassword());
         if(!matches) {
