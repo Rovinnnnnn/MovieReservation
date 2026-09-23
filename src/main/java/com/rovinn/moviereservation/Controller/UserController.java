@@ -1,24 +1,29 @@
 package com.rovinn.moviereservation.Controller;
 
 import com.rovinn.moviereservation.Service.UserServiceInterface;
-import com.rovinn.moviereservation.model.UserRequestDTO;
 import com.rovinn.moviereservation.model.UserResponseDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserServiceInterface service;
-    public UserController(UserServiceInterface service) {
+    public UserController(UserServiceInterface service)
+    {
         this.service = service;
     }
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRequestDTO register) {
-        return ResponseEntity.ok(service.register(register));
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserResponseDTO>> getAllUser(){
+        return ResponseEntity.ok(service.getAllUsers());
     }
-    @PostMapping("/login")
-    public ResponseEntity<UserResponseDTO> login(@RequestBody UserRequestDTO login) {
-        return ResponseEntity.ok(service.login(login));
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(service.findUserByEmail(email));
     }
 }

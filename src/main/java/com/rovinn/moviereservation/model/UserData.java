@@ -21,4 +21,8 @@ public class UserData {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be 8 character longs")
     private String password;
+    @Enumerated (EnumType.STRING)
+    @Column (nullable = false)
+    private Role role;
+
 }
