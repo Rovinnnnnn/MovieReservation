@@ -28,12 +28,13 @@
 
             UserData user = userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User not found with email : " + email));
             ShowTimeData showTime = showTimesRepository.findById(reservationRequestDTO.getShowTimeId()).orElseThrow(() -> new ResourceNotFoundException("Show Time not found"));
-            if(reservationRepository.existsByShowTimeIdAndSeatNumber(showTime.getId(), reservationRequestDTO.getSeatNumber())){
+            if (reservationRepository.existsByShowTimeIdAndSeatNumberAndStatusNot(showTime.getId(), reservationRequestDTO.getSeatNumber(), Status.CANCELLED)) {
                 throw new DuplicationResourceException("SeatNumber is Already Taken!");
             }
             if(showTime.getAvailableSeats() <= 0){
                 throw new RuntimeException("No seat available Available!");
             }
+
             ReservationData reservation = new  ReservationData();
             reservation.setUser(user);
             reservation.setShowTime(showTime);
@@ -72,17 +73,23 @@
         @Override
         @Transactional
         public void cancelReservationById(Long id, String email) {
-          UserData user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email : " + email));
-          ReservationData reservation = reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation not found with id : " + id));
-          if (!reservation.getUser().getId().equals(user.getId())) {
-              throw new AccessDeniedException("You are not allowed to cancel this reservation");
-          }
-          if (reservation.getStatus() != Status.PENDING){
-              throw new IllegalStateException("Cannot cancel reservation that is already " +  reservation.getStatus());
-          }
-          reservation.setStatus(Status.CANCELLED);
-          ShowTimeData showtime = new ShowTimeData();
-          showtime.setAvailableSeats(showtime.getAvailableSeats()+1);
+            UserData user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email : " + email));
+            ReservationData reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Reservation not found with id : " + id));
+
+            if (!reservation.getUser().getId().equals(user.getId())) {
+                throw new AccessDeniedException("You are not allowed to cancel this reservation");
+            }
+            if (reservation.getStatus() == Status.CANCELLED) {
+                throw new IllegalStateException("Reservation is already cancelled");
+            }
+
+            reservation.setStatus(Status.CANCELLED);
+
+            ShowTimeData showtime = reservation.getShowTime();   // the real showtime of this reservation
+            int left = showtime.getAvailableSeats() == null ? 0 : showtime.getAvailableSeats();
+            showtime.setAvailableSeats(left + 1);
         }
         private ReservationResponseDTO mapToReservationResponseDTO(ReservationData reservationData) {
             ReservationResponseDTO reservationResponseDTO = new ReservationResponseDTO();

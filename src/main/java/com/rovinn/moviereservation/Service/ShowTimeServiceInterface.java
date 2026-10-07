@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ShowTimeServiceInterface {
     ShowTimeResponseDTO createShowTime(ShowTimeRequestDTO  requestDTO);
-    List<ShowTimeResponseDTO>  getAllShowTime ();
+    List<ShowTimeResponseDTO> getShowTimesByMovieId(Long movieId);
     void deleteShowTime(Long id);
+    List<String> getTakenSeats(Long showTimeId);
 }

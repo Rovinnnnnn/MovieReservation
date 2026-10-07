@@ -13,7 +13,7 @@ public class ReservationRequestDTO {
     private Long userId;
 
     @NotNull(message = "Show Time is required")
-    private Long ShowTimeId;
+    private Long showTimeId;
 
     @NotBlank(message = "Seat Number is required")
     private String seatNumber;

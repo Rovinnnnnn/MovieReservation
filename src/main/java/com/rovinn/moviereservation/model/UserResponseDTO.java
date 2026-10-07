@@ -9,10 +9,11 @@
     @AllArgsConstructor
     public class UserResponseDTO {
         private Long id;
+        private String username;
         private String email;
         private String token;
         public UserResponseDTO(Long id, String email) {
          this.id = id;
-          this.email = email;
+         this.email = email;
      }
     }

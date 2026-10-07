@@ -30,6 +30,7 @@ public class UserServiceImp implements UserServiceInterface {
   @Override
   public UserResponseDTO register(UserRequestDTO register) {
       UserData userData = new UserData();
+      userData.setName(register.getUsername());
       userData.setEmail(register.getEmail());
       userData.setPassword(passwordEncoder.encode(register.getPassword()));
       userData.setRole(Role.ROLE_USER);
@@ -68,6 +69,7 @@ public class UserServiceImp implements UserServiceInterface {
     public UserResponseDTO mapToUserResponseDTO(UserData userData) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId(userData.getId());
+        userResponseDTO.setUsername(userData.getName());
         userResponseDTO.setEmail(userData.getEmail());
         return userResponseDTO;
     }

@@ -27,8 +27,4 @@ public class MovieData {
     private Category genre;
     @NotBlank (message = "Poster is required")
     private String poster;
-    @ElementCollection
-    @CollectionTable (name = "movie_showtime" , joinColumns = @JoinColumn(name = "movies_id"))
-    @Column (name = "showtime")
-    private List<String> showTimes = new ArrayList<>();
 }

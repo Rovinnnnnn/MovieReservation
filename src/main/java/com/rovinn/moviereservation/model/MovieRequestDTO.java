@@ -18,6 +18,4 @@
         private Category genre;
         @NotBlank (message = "Poster is required")
         private String poster;
-        @NotEmpty (message = "Show Times cannot be empty")
-        private List<String> showTimes;
     }

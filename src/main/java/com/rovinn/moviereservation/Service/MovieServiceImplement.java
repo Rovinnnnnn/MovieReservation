@@ -41,6 +41,7 @@ public class MovieServiceImplement implements MovieServiceInterface {
         public MovieResponseDTO updateMovieById(Long id, MovieRequestDTO movieRequestDTO) {
               MovieData findMovie =  movie.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie with id '" + id + "' not found!"));
               MovieData updated = mapToEntity(movieRequestDTO, findMovie);
+              movie.save(updated);
               return mapToResponseDTO(updated);
         }
         @Override
@@ -55,7 +56,6 @@ public class MovieServiceImplement implements MovieServiceInterface {
             responseDTO.setDescription(data.getDescription());
             responseDTO.setGenre(data.getGenre());
             responseDTO.setPoster(data.getPoster());
-            responseDTO.setShowTimes(data.getShowTimes());
             return responseDTO;
         }
         private MovieData mapToEntity(MovieRequestDTO movieRequestDTO, MovieData entity) {
@@ -63,7 +63,6 @@ public class MovieServiceImplement implements MovieServiceInterface {
             entity.setDescription(movieRequestDTO.getDescription());
             entity.setGenre(movieRequestDTO.getGenre());
             entity.setPoster(movieRequestDTO.getPoster());
-            entity.setShowTimes(movieRequestDTO.getShowTimes());
             return entity;
         }
 }

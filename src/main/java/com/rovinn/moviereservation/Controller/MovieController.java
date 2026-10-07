@@ -24,12 +24,10 @@ public class MovieController {
         return ResponseEntity.ok(movieService.addMovie(movieRequestDTO));
     }
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<MovieResponseDTO> getMovie(@PathVariable Long id) {
         return ResponseEntity.ok(movieService.getMovieById(id));
     }
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<MovieResponseDTO>> getAllMovies() {
         return ResponseEntity.ok(movieService.getAllMovies());
     }
