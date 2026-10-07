@@ -1,10 +1,19 @@
-package com.rovinn.moviereservation.model;
+    package com.rovinn.moviereservation.model;
 
-import lombok.Data;
+    import lombok.AllArgsConstructor;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
 
-@Data
-public class UserResponseDTO {
-    private Long id;
-    private String email;
-    private String token;
-}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class UserResponseDTO {
+        private Long id;
+        private String username;
+        private String email;
+        private String token;
+        public UserResponseDTO(Long id, String email) {
+         this.id = id;
+         this.email = email;
+     }
+    }

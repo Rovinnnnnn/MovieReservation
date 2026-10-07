@@ -1,5 +1,7 @@
 package com.rovinn.moviereservation.Service;
 
+import com.rovinn.moviereservation.Exception.DuplicationResourceException;
+import com.rovinn.moviereservation.Exception.ResourceNotFoundException;
 import com.rovinn.moviereservation.Repository.MovieRepository;
 import com.rovinn.moviereservation.model.MovieData;
 import com.rovinn.moviereservation.model.MovieRequestDTO;
@@ -16,10 +18,10 @@ public class MovieServiceImplement implements MovieServiceInterface {
         this.movie = movie;
     }
         @Override
-        public MovieResponseDTO addMovie(MovieRequestDTO movieRequestDTO) {
-            if (movie.existsByTitle(movieRequestDTO.getTitle())) {
-                throw new RuntimeException("Movie with title '" + movieRequestDTO.getTitle() + "' already exists!");
-             }
+            public MovieResponseDTO addMovie(MovieRequestDTO movieRequestDTO) {
+                if (movie.existsByTitle(movieRequestDTO.getTitle())) {
+                     throw new DuplicationResourceException("Movie with title : "+ movieRequestDTO.getTitle() + "already exists");
+                 }
                  MovieData addNew = new MovieData();
                  mapToEntity(movieRequestDTO, addNew);
                  MovieData saved = movie.save(addNew);
@@ -28,7 +30,7 @@ public class MovieServiceImplement implements MovieServiceInterface {
         }
         @Override
         public MovieResponseDTO getMovieById(Long id) {
-             MovieData find = movie.findById(id).orElseThrow(() -> new RuntimeException("Movie with id '" + id + "' not found!"));
+             MovieData find = movie.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie with id '" + id + "' not found!"));
                return mapToResponseDTO(find);
         }
         @Override
@@ -37,13 +39,14 @@ public class MovieServiceImplement implements MovieServiceInterface {
         }
         @Override
         public MovieResponseDTO updateMovieById(Long id, MovieRequestDTO movieRequestDTO) {
-              MovieData findMovie =  movie.findById(id).orElseThrow(() -> new RuntimeException("Movie with id '" + id + "' not found!"));
+              MovieData findMovie =  movie.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie with id '" + id + "' not found!"));
               MovieData updated = mapToEntity(movieRequestDTO, findMovie);
+              movie.save(updated);
               return mapToResponseDTO(updated);
         }
         @Override
         public void deleteMovie(Long id){
-           movie.findById(id).orElseThrow(() -> new RuntimeException("Movie with id '" + id + "' not found!"));
+           movie.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie with id '" + id + "' not found!"));
            movie.deleteById(id);
         }
         private MovieResponseDTO mapToResponseDTO(MovieData data) {
@@ -53,7 +56,6 @@ public class MovieServiceImplement implements MovieServiceInterface {
             responseDTO.setDescription(data.getDescription());
             responseDTO.setGenre(data.getGenre());
             responseDTO.setPoster(data.getPoster());
-            responseDTO.setShowTimes(data.getShowTimes());
             return responseDTO;
         }
         private MovieData mapToEntity(MovieRequestDTO movieRequestDTO, MovieData entity) {
@@ -61,7 +63,6 @@ public class MovieServiceImplement implements MovieServiceInterface {
             entity.setDescription(movieRequestDTO.getDescription());
             entity.setGenre(movieRequestDTO.getGenre());
             entity.setPoster(movieRequestDTO.getPoster());
-            entity.setShowTimes(movieRequestDTO.getShowTimes());
             return entity;
         }
 }

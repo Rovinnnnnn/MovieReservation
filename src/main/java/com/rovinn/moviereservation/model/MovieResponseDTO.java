@@ -11,5 +11,4 @@ public class MovieResponseDTO {
     private String description;
     private Category genre;
     private String poster;
-    private List<String> showTimes;
 }

@@ -13,6 +13,9 @@ public class UserData {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank (message = "Username is required")
+    @Column (nullable = false, unique = true)
+    private String name;
     @Column (nullable = false, unique = true)
     @NotBlank (message = "Email is required")
     @Email (message = "Email must be valid")
@@ -21,4 +24,8 @@ public class UserData {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be 8 character longs")
     private String password;
+    @Enumerated (EnumType.STRING)
+    @Column (nullable = false)
+    private Role role;
+
 }
